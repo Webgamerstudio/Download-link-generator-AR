@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Link Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .input-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"], input[type="url"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus, input[type="url"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+            background: linear-gradient(45deg, #45a049, #4CAF50);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .links-section {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(145deg, #fff, #f8f9fa);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .links-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .link-item {
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+
+        .link-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .link-item strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .link-url {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            border: 1px solid #dee2e6;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .github-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(145deg, #24292e, #2f363d);
+            color: white;
+            border-radius: 15px;
+        }
+
+        .github-section h3 {
+            color: #f6f8fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .github-section p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .github-section code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .input-section {
+                padding: 20px;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 App Link Generator</h1>
+            <p>আপনার অ্যাপের জন্য কাস্টম ডাউনলোড লিংক তৈরি করুন</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="appName">অ্যাপের নাম:</label>
+                    <input type="text" id="appName" placeholder="যেমন: MyAwesomeApp" />
+                </div>
+
+                <div class="form-group">
+                    <label for="baseUrl">বেস URL (ঐচ্ছিক):</label>
+                    <input type="url" id="baseUrl" placeholder="https://yoursite.com" />
+                </div>
+
+                <button class="btn" onclick="generateLinks()">লিংক তৈরি করুন</button>
+            </div>
+
+            <div class="links-section hidden" id="linksSection">
+                <h3>📱 জেনারেট হওয়া লিংকসমূহ</h3>
+                <div id="linksList"></div>
+            </div>
+
+            <div class="github-section">
+                <h3>📦 GitHub API দিয়ে Direct Download</h3>
+                <p><strong>হ্যাঁ!</strong> GitHub API দিয়ে আপনি সরাসরি ডাউনলোড লিংক পেতে পারেন:</p>
+                <p>• <code>https://api.github.com/repos/username/repo/releases/latest</code> - সর্বশেষ রিলিজের তথ্য</p>
+                <p>• <code>https://github.com/username/repo/releases/download/tag/filename.apk</code> - সরাসরি ফাইল ডাউনলোড</p>
+                <p>• GitHub Actions দিয়ে automatic release তৈরি করতে পারেন</p>
+                <p>• রিলিজ তৈরি করার পর API থেকে download_url পাবেন</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateLinks() {
+            const appName = document.getElementById('appName').value.trim();
+            const baseUrl = document.getElementById('baseUrl').value.trim() || 'https://yoursite.com';
+            
+            if (!appName) {
+                showToast('অনুগ্রহ করে অ্যাপের নাম লিখুন!', 'error');
+                return;
+            }
+
+            const sanitizedName = appName.replace(/\s+/g, '').toLowerCase();
+            const linksSection = document.getElementById('linksSection');
+            const linksList = document.getElementById('linksList');
+
+            const links = [
+                {
+                    title: 'Android APK Download',
+                    url: `${baseUrl}/downloads/${sanitizedName}.apk`
+                },
+                {
+                    title: 'iOS App Store',
+                    url: `https://apps.apple.com/app/${sanitizedName}`
+                },
+                {
+                    title: 'Windows Download',
+                    url: `${baseUrl}/downloads/${sanitizedName}.exe`
+                },
+                {
+                    title: 'macOS Download',
+                    url: `${baseUrl}/downloads/${sanitizedName}.dmg`
+                },
+                {
+                    title: 'Linux AppImage',
+                    url: `${baseUrl}/downloads/${sanitizedName}.AppImage`
+                },
+                {
+                    title: 'Web App',
+                    url: `${baseUrl}/app/${sanitizedName}`
+                },
+                {
+                    title: 'GitHub Repository',
+                    url: `https://github.com/yourusername/${sanitizedName}`
+                },
+                {
+                    title: 'GitHub Latest Release',
+                    url: `https://github.com/yourusername/${sanitizedName}/releases/latest`
+                }
+            ];
+
+            linksList.innerHTML = '';
+            
+            links.forEach(link => {
+                const linkItem = document.createElement('div');
+                linkItem.className = 'link-item';
+                linkItem.innerHTML = `
+                    <strong>${link.title}:</strong>
+                    <div class="link-url">
+                        ${link.url}
+                        <button class="copy-btn" onclick="copyToClipboard('${link.url}')">Copy</button>
+                    </div>
+                `;
+                linksList.appendChild(linkItem);
+            });
+
+            linksSection.classList.remove('hidden');
+            showToast('লিংকসমূহ সফলভাবে তৈরি হয়েছে!');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('লিংক কপি হয়েছে!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('লিংক কপি হয়েছে!');
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            if (type === 'error') {
+                toast.style.background = '#f44336';
+            }
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Enter key support
+        document.getElementById('appName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateLinks();
+            }
+        });
+
+        document.getElementById('baseUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateLinks();
+            }
+        });
+    </script>
+</body>
+</html>
