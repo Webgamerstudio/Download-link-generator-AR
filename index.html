@@ -1,777 +1,176 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Scanner AR</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download AR APK To Link Generator</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: white;
-        }
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      padding: 20px;
+    }
 
-        .header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    .download-container {
+      width: 100%;
+      max-width: 500px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      border: 2px solid #f0f0f0;
+    }
 
-        .header h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
+    h1 {
+      font-size: 1.6rem;
+      color: #333;
+      margin-bottom: 25px;
+    }
 
-        .header p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
+    .download-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      padding: 15px 35px;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      display: inline-block;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      transition: 0.3s ease;
+    }
 
-        .container {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    .download-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+    }
 
-        .scanner-modes {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+    .file-info {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+    }
 
-        .mode-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            backdrop-filter: blur(10px);
-        }
+    .file-info strong {
+      color: #333;
+    }
 
-        .mode-btn.active {
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
-        }
+    .footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #888;
+    }
 
-        .scanner-section {
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-        }
+    /* Ad container (default no space) */
+    #ad-container {
+      margin: 0;
+      text-align: center;
+      display: none; /* hide until ad loads */
+    }
 
-        .scanner-section.active {
-            display: flex;
-        }
-
-        .camera-container {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        #video {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1;
-            object-fit: cover;
-        }
-
-        .scanner-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            border: 3px solid #00ff88;
-            border-radius: 20px;
-            box-shadow: 0 0 0 99999px rgba(0, 0, 0, 0.5);
-        }
-
-        .scanner-overlay::before,
-        .scanner-overlay::after {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border: 4px solid #00ff88;
-        }
-
-        .scanner-overlay::before {
-            top: -4px;
-            left: -4px;
-            border-right: none;
-            border-bottom: none;
-            border-top-left-radius: 20px;
-        }
-
-        .scanner-overlay::after {
-            bottom: -4px;
-            right: -4px;
-            border-left: none;
-            border-top: none;
-            border-bottom-right-radius: 20px;
-        }
-
-        .upload-area {
-            border: 3px dashed rgba(255, 255, 255, 0.5);
-            border-radius: 20px;
-            padding: 40px 20px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .upload-area:hover {
-            border-color: #00ff88;
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .upload-area.drag-over {
-            border-color: #00ff88;
-            background: rgba(0, 255, 136, 0.1);
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            opacity: 0.7;
-        }
-
-        .upload-text {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .upload-subtext {
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        .preview-container {
-            display: none;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        #previewImage {
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #00ff88, #00d4ff);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .result-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .result-section.show {
-            display: block;
-        }
-
-        .result-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #00ff88;
-        }
-
-        .result-content {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            word-break: break-all;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .result-actions {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
-        .loading::after {
-            content: '';
-            animation: dots 1.5s infinite;
-        }
-
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60% { content: '...'; }
-            80%, 100% { content: ''; }
-        }
-
-        .error {
-            background: rgba(255, 82, 82, 0.2);
-            border: 2px solid rgba(255, 82, 82, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .scanner-overlay {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .upload-area {
-                padding: 30px 15px;
-            }
-            
-            .upload-icon {
-                font-size: 2.5rem;
-            }
-        }
-    </style>
+    /* Mobile friendly */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.3rem;
+      }
+      .download-btn {
+        font-size: 16px;
+        padding: 12px 28px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🔍 QR Scanner AR</h1>
-        <p>QR কোড স্ক্যান করুন বা ছবি আপলোড করুন</p>
+  <div class="download-container">
+    <h1>📱 AR APK To Link Generator</h1>
+
+    <!-- Rotating Random Ad -->
+    <div id="ad-container"></div>
+
+    <a href="https://raw.githubusercontent.com/Webgamerstudio/Download-link-generator-AR/main/apks/2025-09-11T11-26-05-AR%20APK%20To%20Link%20Generator%20.apk" 
+       download="AR APK To Link Generator.apk" 
+       class="download-btn">
+      ⬇️ Download APK (15.57 MB)
+    </a>
+
+    <div class="file-info">
+      <p><strong>File Size:</strong> 15.57 MB</p>
+      <p><strong>Upload Date:</strong> 9/11/2025</p>
     </div>
 
-    <div class="container">
-        <div class="scanner-modes">
-            <button class="mode-btn active" onclick="switchMode('camera')">📷 ক্যামেরা স্ক্যান</button>
-            <button class="mode-btn" onclick="switchMode('upload')">📁 ছবি আপলোড</button>
-        </div>
-
-        <!-- Camera Scanner Section -->
-        <div id="cameraSection" class="scanner-section active">
-            <div class="camera-container">
-                <video id="video" autoplay playsinline></video>
-                <div class="scanner-overlay"></div>
-            </div>
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="startCamera()">📷 ক্যামেরা চালু করুন</button>
-                <button class="btn btn-secondary" onclick="stopCamera()">⏹ বন্ধ করুন</button>
-            </div>
-        </div>
-
-        <!-- Upload Scanner Section -->
-        <div id="uploadSection" class="scanner-section">
-            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-icon">📷</div>
-                <div class="upload-text">ছবি আপলোড করুন</div>
-                <div class="upload-subtext">ক্লিক করুন বা ড্র্যাগ করে ছবি আপলোড করুন</div>
-            </div>
-            <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
-            
-            <div id="previewContainer" class="preview-container">
-                <img id="previewImage" alt="Preview">
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="scanImage()">🔍 স্ক্যান করুন</button>
-                    <button class="btn btn-secondary" onclick="clearPreview()">🗑 সাফ করুন</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Loading -->
-        <div id="loading" class="loading" style="display: none;">
-            স্ক্যান করা হচ্ছে
-        </div>
-
-        <!-- Result Section -->
-        <div id="resultSection" class="result-section">
-            <div class="result-title">📋 স্ক্যান ফলাফল</div>
-            <div id="resultContent" class="result-content"></div>
-            <div class="result-actions">
-                <button class="btn btn-primary" onclick="copyResult()">📋 কপি করুন</button>
-                <button class="btn btn-secondary" onclick="shareResult()">📤 শেয়ার করুন</button>
-            </div>
-        </div>
-
-        <!-- Error Section -->
-        <div id="errorSection" class="error" style="display: none;">
-            <div id="errorMessage"></div>
-        </div>
+    <div class="footer">
+      <p>⚡ Powered by GitHub API | APK Generator v1.0</p>
     </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js" integrity="sha512-dxNMqrsu4MhRVAlJn8WzuCOjm9XV8DJbj5lj8K6mXhCvcdmhPROhJ2RgmOJDLgECMU9rKRJLLLvIKgSjY5gRvw==" crossorigin="anonymous"></script>
-    <script>
-        // Wait for jsQR to load
-        function waitForJsQR() {
-            return new Promise((resolve, reject) => {
-                if (typeof jsQR !== 'undefined') {
-                    resolve();
-                } else {
-                    let attempts = 0;
-                    const maxAttempts = 50; // 5 seconds
-                    const checkInterval = setInterval(() => {
-                        attempts++;
-                        if (typeof jsQR !== 'undefined') {
-                            clearInterval(checkInterval);
-                            resolve();
-                        } else if (attempts >= maxAttempts) {
-                            clearInterval(checkInterval);
-                            reject(new Error('jsQR library failed to load'));
-                        }
-                    }, 100);
-                }
-            });
-        }
+  <!-- Random Rotating Ads Script -->
+  <script type="text/javascript">
+    const ads = [
+      {
+        key: "63718988f07bc6d276f3c6a441757cae",
+        format: "iframe",
+        height: 90,
+        width: 728
+      },
+      {
+        key: "c620af328467e6de19dc04af696ee0fb",
+        format: "iframe",
+        height: 250,
+        width: 300
+      },
+      {
+        key: "78ade24182729fceea8e45203dad915b",
+        format: "iframe",
+        height: 50,
+        width: 320
+      }
+    ];
 
-        let video = document.getElementById('video');
-        let canvas = document.createElement('canvas');
-        let context = canvas.getContext('2d');
-        let currentStream = null;
-        let scanning = false;
-        let lastResult = '';
-        let jsQRReady = false;
+    function loadRandomAd() {
+      const randomAd = ads[Math.floor(Math.random() * ads.length)];
+      const adContainer = document.getElementById("ad-container");
 
-        // Mode switching
-        function switchMode(mode) {
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.scanner-section').forEach(section => section.classList.remove('active'));
-            
-            if (mode === 'camera') {
-                document.querySelector('.mode-btn').classList.add('active');
-                document.getElementById('cameraSection').classList.add('active');
-                stopCamera();
-            } else {
-                document.querySelectorAll('.mode-btn')[1].classList.add('active');
-                document.getElementById('uploadSection').classList.add('active');
-                stopCamera();
-            }
-            
-            hideResult();
-            hideError();
-        }
+      adContainer.innerHTML = ""; // clear old ad
+      adContainer.style.display = "none"; // hide before load
 
-        // Camera functions
-        async function startCamera() {
-            try {
-                hideError();
-                showLoading('ক্যামেরা চালু করা হচ্ছে');
-                
-                // Check if running in secure context (HTTPS)
-                if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                    hideLoading();
-                    showError('ক্যামেরা ব্যবহারের জন্য HTTPS প্রয়োজন। অনুগ্রহ করে HTTPS সাইটে আপলোড করুন।');
-                    return;
-                }
-                
-                const constraints = {
-                    video: {
-                        facingMode: { ideal: 'environment' },
-                        width: { ideal: 1280, min: 640 },
-                        height: { ideal: 720, min: 480 }
-                    }
-                };
+      window.atOptions = {
+        'key': randomAd.key,
+        'format': randomAd.format,
+        'height': randomAd.height,
+        'width': randomAd.width,
+        'params': {}
+      };
 
-                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = currentStream;
-                
-                video.onloadedmetadata = () => {
-                    video.play().then(() => {
-                        hideLoading();
-                        scanning = true;
-                        scanFromCamera();
-                    }).catch(err => {
-                        hideLoading();
-                        showError('ভিডিও চালু করতে সমস্যা হয়েছে।');
-                    });
-                };
-                
-            } catch (error) {
-                hideLoading();
-                console.error('Camera error:', error);
-                let errorMsg = 'ক্যামেরা অ্যাক্সেস করতে সমস্যা হয়েছে।';
-                
-                if (error.name === 'NotAllowedError') {
-                    errorMsg = 'ক্যামেরা অনুমতি দিন। ব্রাউজারের ঠিকানার পাশে ক্যামেরা আইকনে ক্লিক করুন।';
-                } else if (error.name === 'NotFoundError') {
-                    errorMsg = 'কোনো ক্যামেরা পাওয়া যায়নি। ছবি আপলোড অপশন ব্যবহার করুন।';
-                } else if (error.name === 'NotSupportedError') {
-                    errorMsg = 'আপনার ব্রাউজার ক্যামেরা সাপোর্ট করে না।';
-                }
-                
-                showError(errorMsg);
-            }
-        }
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "//www.highperformanceformat.com/" + randomAd.key + "/invoke.js";
 
-        function stopCamera() {
-            scanning = false;
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-                currentStream = null;
-            }
-            video.srcObject = null;
-        }
+      // When script is added, show container
+      script.onload = () => {
+        adContainer.style.display = "block";
+        adContainer.style.margin = "25px 0";
+      };
 
-        function scanFromCamera() {
-            if (!scanning || !jsQRReady) return;
+      adContainer.appendChild(script);
+    }
 
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                try {
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    
-                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                    
-                    // Check if jsQR is available before using
-                    if (typeof jsQR !== 'undefined') {
-                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: "dontInvert",
-                        });
-                        
-                        if (code && code.data) {
-                            displayResult(code.data);
-                            return;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Camera scan error:', error);
-                }
-            }
-            
-            requestAnimationFrame(scanFromCamera);
-        }
-
-        // File upload functions
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewImage = document.getElementById('previewImage');
-                previewImage.src = e.target.result;
-                document.getElementById('previewContainer').style.display = 'block';
-                hideResult();
-                hideError();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function scanImage() {
-            const previewImage = document.getElementById('previewImage');
-            if (!previewImage.src) {
-                showError('প্রথমে একটি ছবি আপলোড করুন।');
-                return;
-            }
-
-            if (!jsQRReady) {
-                showError('QR স্ক্যানার এখনও লোড হচ্ছে। কিছুক্ষণ অপেক্ষা করুন।');
-                return;
-            }
-
-            showLoading('ছবি স্ক্যান করা হচ্ছে');
-
-            // Add delay to ensure image is fully loaded
-            setTimeout(() => {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = function() {
-                    try {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        context.drawImage(img, 0, 0);
-                        
-                        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                        
-                        // Check if jsQR is available
-                        if (typeof jsQR === 'undefined') {
-                            hideLoading();
-                            showError('QR স্ক্যানার লোড হয়নি। পেজ রিফ্রেশ করুন।');
-                            return;
-                        }
-                        
-                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: "dontInvert",
-                        });
-                        
-                        hideLoading();
-                        
-                        if (code && code.data) {
-                            displayResult(code.data);
-                        } else {
-                            // Try with inverted colors
-                            const invertedCode = jsQR(imageData.data, imageData.width, imageData.height, {
-                                inversionAttempts: "attemptBoth",
-                            });
-                            
-                            if (invertedCode && invertedCode.data) {
-                                displayResult(invertedCode.data);
-                            } else {
-                                showError('এই ছবিতে কোনো QR কোড পাওয়া যায়নি। একটি স্পষ্ট এবং সম্পূর্ণ QR কোড ছবি ব্যবহার করুন।');
-                            }
-                        }
-                    } catch (error) {
-                        hideLoading();
-                        showError('ছবি প্রক্রিয়া করতে সমস্যা হয়েছে।');
-                        console.error('Image processing error:', error);
-                    }
-                };
-                img.onerror = function() {
-                    hideLoading();
-                    showError('ছবি লোড করতে সমস্যা হয়েছে।');
-                };
-                img.src = previewImage.src;
-            }, 100);
-        }
-
-        function clearPreview() {
-            document.getElementById('previewContainer').style.display = 'none';
-            document.getElementById('fileInput').value = '';
-            hideResult();
-            hideError();
-        }
-
-        // Result functions
-        function displayResult(data) {
-            lastResult = data;
-            document.getElementById('resultContent').textContent = data;
-            document.getElementById('resultSection').classList.add('show');
-            
-            // Auto-scroll to result
-            document.getElementById('resultSection').scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
-            });
-        }
-
-        function copyResult() {
-            if (!lastResult) return;
-            
-            // Modern clipboard API
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(lastResult).then(() => {
-                    showCopySuccess();
-                }).catch(() => {
-                    // Fallback for older browsers
-                    fallbackCopyTextToClipboard(lastResult);
-                });
-            } else {
-                // Fallback for older browsers
-                fallbackCopyTextToClipboard(lastResult);
-            }
-        }
-
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.top = "-999999px";
-            textArea.style.left = "-999999px";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showCopySuccess();
-                } else {
-                    showError('কপি করতে সমস্যা হয়েছে।');
-                }
-            } catch (err) {
-                showError('কপি করতে সমস্যা হয়েছে।');
-            }
-
-            document.body.removeChild(textArea);
-        }
-
-        function showCopySuccess() {
-            const btn = document.querySelector('.result-actions .btn-primary');
-            const originalText = btn.textContent;
-            btn.textContent = '✓ কপি হয়েছে!';
-            btn.style.background = 'linear-gradient(45deg, #00ff88, #00cc70)';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = 'linear-gradient(45deg, #00ff88, #00d4ff)';
-            }, 2000);
-        }
-
-        function shareResult() {
-            if (!lastResult) return;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'QR Scanner AR ফলাফল',
-                    text: lastResult
-                });
-            } else {
-                copyResult();
-            }
-        }
-
-        // Utility functions
-        function showLoading(message) {
-            const loading = document.getElementById('loading');
-            loading.textContent = message;
-            loading.style.display = 'block';
-        }
-
-        function hideLoading() {
-            document.getElementById('loading').style.display = 'none';
-        }
-
-        function showError(message) {
-            document.getElementById('errorMessage').textContent = message;
-            document.getElementById('errorSection').style.display = 'block';
-            setTimeout(hideError, 5000);
-        }
-
-        function hideError() {
-            document.getElementById('errorSection').style.display = 'none';
-        }
-
-        function hideResult() {
-            document.getElementById('resultSection').classList.remove('show');
-        }
-
-        // Drag and drop functionality
-        const uploadArea = document.querySelector('.upload-area');
-        
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('drag-over');
-        });
-        
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('drag-over');
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('drag-over');
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.type.startsWith('image/')) {
-                    const fileInput = document.getElementById('fileInput');
-                    fileInput.files = files;
-                    handleFileUpload({ target: fileInput });
-                }
-            }
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('Initializing QR Scanner AR...');
-            
-            try {
-                // Wait for jsQR library to load
-                await waitForJsQR();
-                jsQRReady = true;
-                console.log('jsQR library loaded successfully');
-            } catch (error) {
-                console.error('Failed to load jsQR library:', error);
-                showError('QR স্ক্যানার লাইব্রেরি লোড হতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ চেক করুন এবং পেজ রিফ্রেশ করুন।');
-                return;
-            }
-
-            // Check if camera is available
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                console.log('Camera not supported, switching to upload mode');
-                switchMode('upload');
-            }
-
-            // Check if running on HTTPS (required for camera)
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-                console.log('HTTPS required for camera access');
-            }
-
-            // Initialize canvas context
-            if (!canvas.getContext) {
-                showError('আপনার ব্রাউজার HTML5 Canvas সাপোর্ট করে না।');
-                return;
-            }
-
-            console.log('QR Scanner AR initialized successfully');
-        });
-    </script>
+    // প্রথম লোডে অ্যাড
+    loadRandomAd();
+    // প্রতি 30 সেকেন্ড পর নতুন অ্যাড
+    setInterval(loadRandomAd, 30000);
+  </script>
 </body>
 </html>
